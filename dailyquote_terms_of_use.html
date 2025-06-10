@@ -1,0 +1,161 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DailyQuote Terms of Use</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+        }
+        p, li {
+            color: #555;
+        }
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>DAILYQUOTE TERMS OF USE</h1>
+    <p><strong>Effective Date:</strong> June 10, 2025</p>
+
+    <h2>1. Introduction</h2>
+    <p>Welcome to the DailyQuote mobile application ("App") operated by Stjepan Vardić ("we," "us," or "our"). By downloading, installing, or using the App on your Android device, you agree to be bound by these Terms of Use ("Terms"). If you do not agree, please do not use the App.</p>
+    <p>The App provides motivational quotes sourced from the public domain and is currently free of charge, with an optional in-app purchase to remove ads.</p>
+
+    <h2>2. Minimum Age</h2>
+    <p>By using the App, you represent that you are at least 5 years old. If you are under the minimum age, please use the App only with parental or guardian consent.</p>
+
+    <h2>3. Privacy Policy</h2>
+    <p>Your use of the App is also governed by our Privacy Policy, which explains how we collect, use, and protect your data, including data collected via third-party services such as Google Ads. The Privacy Policy is available at: <a href="https://stjvardi.github.io/dailyquote_privacy_policy.html">https://stjvardi.github.io/dailyquote_privacy_policy.html</a></p>
+
+    <h2>4. Open Source Components</h2>
+    <p>The App incorporates certain open source software components governed by their respective licenses, including but not limited to:</p>
+    <ul>
+        <li>MIT License for [Component Name(s)]</li>
+        <li>Apache 2.0 License for [Component Name(s)]</li>
+    </ul>
+    <p>Copies of these licenses are available upon request by contacting us at <a href="mailto:dailyquote.privacy@gmail.com">dailyquote.privacy@gmail.com</a>.</p>
+
+    <h2>5. Intellectual Property Rights</h2>
+    <p>All content in the App, excluding public domain quotes, including but not limited to the App’s name, logo, user interface, graphics, and design, are the property of Stjepan Vardić. You may not copy, modify, distribute, or create derivative works without express written permission. Public domain quotes are not subject to copyright.</p>
+
+    <h2>6. Permitted Uses</h2>
+    <p>You may:</p>
+    <ul>
+        <li>View and read quotes</li>
+        <li>Share quotes via social media or other platforms</li>
+        <li>Save quotes for personal, non-commercial use</li>
+    </ul>
+
+    <h2>7. Prohibited Conduct</h2>
+    <p>You agree not to:</p>
+    <ul>
+        <li>Use the App for any illegal or unauthorized purpose</li>
+        <li>Attempt to reverse engineer, decompile, or disassemble the App</li>
+        <li>Use automated systems to access the App</li>
+        <li>Claim ownership of any quotes or App content</li>
+        <li>Circumvent or bypass the in-app purchase of the "No-Ads" option</li>
+        <li>Violate any applicable laws or Google Play Developer Program Policies</li>
+    </ul>
+
+    <h2>8. In-App Purchases – No-Ads Option</h2>
+    <p>The App offers an optional one-time in-app purchase to remove all advertisements ("No-Ads" option). By purchasing this option, you agree to the following:</p>
+    <ul>
+        <li><strong>Payment:</strong> Payment will be charged to your Google Play account upon confirmation of purchase.</li>
+        <li><strong>No Refunds:</strong> All purchases are final and non-refundable, except as required by applicable law.</li>
+        <li><strong>Access:</strong> Upon successful payment, all advertisements within the App will be disabled.</li>
+        <li><strong>Price Changes:</strong> We reserve the right to modify the price of the "No-Ads" option at any time; any changes will be communicated in the App.</li>
+        <li><strong>Taxes:</strong> You are responsible for any applicable taxes related to the purchase.</li>
+    </ul>
+
+    <h2>9. User Data and Sharing</h2>
+    <p>While users cannot create original content, they may share data or quotes through the App. You are responsible for any data you share. We are not responsible for the content of shared data.</p>
+
+    <h2>10. Disclaimer of Warranty</h2>
+    <p>THE APP IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT. WE DO NOT GUARANTEE THAT THE APP WILL BE AVAILABLE AT ALL TIMES OR THAT THE QUOTES ARE ACCURATE OR SUITABLE FOR YOUR NEEDS.</p>
+
+    <h2>11. Limitation of Liability</h2>
+    <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, WE SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING LOSS OF PROFITS, DATA, OR GOODWILL, ARISING OUT OF YOUR USE OR INABILITY TO USE THE APP, WHETHER OR NOT YOU HAVE PURCHASED THE "NO-ADS" OPTION.</p>
+
+    <h2>12. User Accounts</h2>
+    <p>The App currently does not require user accounts. If this changes, users will be notified and new terms may apply.</p>
+
+    <h2>13. Termination</h2>
+    <p>We reserve the right to terminate or restrict your access to the App at any time, without notice, for violations of these Terms or applicable Google Play policies.</p>
+
+    <h2>14. Dispute Resolution and Governing Law</h2>
+    <p>Any disputes arising out of or relating to these Terms shall be resolved in the competent courts of Serbia. These Terms shall be governed by the laws of Serbia.</p>
+
+    <h2>15. Changes to Terms</h2>
+    <p>We may modify these Terms at any time. Continued use of the App after changes constitutes acceptance of the updated Terms. We encourage you to review these Terms periodically.</p>
+
+    <h2>16. Contact Information</h2>
+    <p>For questions about these Terms or the App, please contact:</p>
+    <p>Stjepan Vardić<br>
+    Email: <a href="mailto:dailyquote.privacy@gmail.com">dailyquote.privacy@gmail.com</a><br>
+    Address: Milentija Popovića, Serbia</p>
+
+    <h2>17. Miscellaneous</h2>
+    <p>If any provision of these Terms is found to be unenforceable, the remaining provisions shall remain in full force and effect. Failure to enforce any right is not a waiver of that right.</p>
+</body>
+</html>
